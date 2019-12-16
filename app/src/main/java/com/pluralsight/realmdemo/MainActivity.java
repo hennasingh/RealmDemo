@@ -6,6 +6,11 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.pluralsight.realmdemo.model.SocialAccount;
+import com.pluralsight.realmdemo.model.User;
+
+import java.util.UUID;
+
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
 
@@ -37,6 +42,27 @@ public class MainActivity extends AppCompatActivity {
 
 	// Add data to Realm using Main UI Thread. Be Careful: As it may BLOCK the UI.
 	public void addUserToRealm_Synchronously(View view) {
+
+        String id = UUID.randomUUID().toString();
+        String name = etPersonName.getText().toString();
+        int age = Integer.valueOf(etAge.getText().toString());
+        String socialAccountName = etSocialAccountName.getText().toString();
+        String status = etStatus.getText().toString();
+
+        try {
+            myRealm.beginTransaction();
+            SocialAccount socialAccount = myRealm.createObject(SocialAccount.class);
+            socialAccount.setName(socialAccountName);
+            socialAccount.setStatus(status);
+
+            User user = myRealm.createObject(User.class, id);
+            user.setName(name);
+            user.setAge(age);
+            user.setSocialAccount(socialAccount);
+            myRealm.commitTransaction();
+        } catch (Exception e) {
+            myRealm.cancelTransaction();
+        }
 
 	}
 
