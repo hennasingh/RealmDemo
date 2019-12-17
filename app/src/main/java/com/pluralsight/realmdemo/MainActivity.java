@@ -1,5 +1,6 @@
 package com.pluralsight.realmdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
                 SocialAccount socialAccount = user.getSocialAccount();
                 if (socialAccount != null) {
-                    socialAccount.setName("~snapchat");
+                    socialAccount.setName("Snapchat");
                     socialAccount.setStatus("Going for a Stroll");
                 }
             }
@@ -273,5 +274,11 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG + " Lists", builder.toString());
 
+    }
+
+    public void openDisplayActivity(View view) {
+
+        Intent intent = new Intent(this, DisplayActivity.class);
+        startActivity(intent);
     }
 }

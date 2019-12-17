@@ -73,4 +73,10 @@
 		android:onClick="displayAllUsers"
 		android:text="Display All" />
 
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:onClick="openDisplayActivity"
+		android:text="Recycler View Display" />
+
 </LinearLayout>
