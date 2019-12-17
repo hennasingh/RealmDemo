@@ -1,8 +1,10 @@
 package com.pluralsight.realmdemo;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -43,47 +45,124 @@ public class MainActivity extends AppCompatActivity {
 	// Add data to Realm using Main UI Thread. Be Careful: As it may BLOCK the UI.
 	public void addUserToRealm_Synchronously(View view) {
 
-        String id = UUID.randomUUID().toString();
-        String name = etPersonName.getText().toString();
-        int age = Integer.valueOf(etAge.getText().toString());
-        String socialAccountName = etSocialAccountName.getText().toString();
-        String status = etStatus.getText().toString();
+        final String id = UUID.randomUUID().toString();
+        final String name = etPersonName.getText().toString();
+        final int age = Integer.valueOf(etAge.getText().toString());
+        final String socialAccountName = etSocialAccountName.getText().toString();
+        final String status = etStatus.getText().toString();
 
-        try {
-            myRealm.beginTransaction();
-            SocialAccount socialAccount = myRealm.createObject(SocialAccount.class);
-            socialAccount.setName(socialAccountName);
-            socialAccount.setStatus(status);
+//        try {
+//            myRealm.beginTransaction();
+//            myRealm.commitTransaction();
+//        } catch (Exception e) {
+//            myRealm.cancelTransaction();
+//        }
 
-            User user = myRealm.createObject(User.class, id);
-            user.setName(name);
-            user.setAge(age);
-            user.setSocialAccount(socialAccount);
-            myRealm.commitTransaction();
-        } catch (Exception e) {
-            myRealm.cancelTransaction();
-        }
+        /**
+         * No success or error methods associated with this call,
+         * cannot be sure if data is added successfully or not even if the Toast msg says so.
+         */
+        myRealm.executeTransaction(new Realm.Transaction() {
+
+            @Override
+            public void execute(Realm realm) {
+                SocialAccount socialAccount = myRealm.createObject(SocialAccount.class);
+                socialAccount.setName(socialAccountName);
+                socialAccount.setStatus(status);
+
+                User user = myRealm.createObject(User.class, id);
+                user.setName(name);
+                user.setAge(age);
+                user.setSocialAccount(socialAccount);
+
+                Toast.makeText(MainActivity.this, "Added Successfully", Toast.LENGTH_LONG).show();
+            }
+        });
 
 	}
 
 	// Add Data to Realm in the Background Thread.
 	public void addUserToRealm_ASynchronously(View view) {
 
+        final String id = UUID.randomUUID().toString();
+        final String name = etPersonName.getText().toString();
+        final int age = Integer.valueOf(etAge.getText().toString());
+        final String socialAccountName = etSocialAccountName.getText().toString();
+        final String status = etStatus.getText().toString();
+
+        /**
+         * \There are 3 variants of this method
+         */
+        realmAsyncTask = myRealm.executeTransactionAsync(new Realm.Transaction() {
+
+            @Override
+            public void execute(Realm realm) {
+
+                SocialAccount socialAccount = realm.createObject(SocialAccount.class);
+                socialAccount.setName(socialAccountName);
+                socialAccount.setStatus(status);
+
+                User user = realm.createObject(User.class, id);
+                user.setName(name);
+                user.setAge(age);
+                user.setSocialAccount(socialAccount);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Added Successfully", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+            }
+        }, new Realm.Transaction.OnSuccess() {
+
+            @Override
+            public void onSuccess() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Added Successfully", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }, new Realm.Transaction.OnError() {
+
+            @Override
+            public void onError(final Throwable error) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Error on adding" + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                Log.e("MainActivity", "Error is " + error.getMessage());
+            }
+        });
 	}
 
 	public void displayAllUsers(View view) {
 
 	}
 
-	@Override
-	protected void onStop() {
-		super.onStop();
+    /**
+     * Realm transaction needs to be cancelled if a call comes or activity goes in the background
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-	}
+        if (realmAsyncTask != null && !realmAsyncTask.isCancelled()) {
+            realmAsyncTask.cancel();
+        }
+
+    }
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+        myRealm.close(); // important to close else memory leaks
 
 	}
 }
