@@ -13,8 +13,10 @@ import com.pluralsight.realmdemo.model.User;
 
 import java.util.UUID;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 /**
@@ -145,20 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
 	public void displayAllUsers(View view) {
         RealmResults<User> userList = myRealm.where(User.class).findAll();
+        displayQueriedUsers(userList);
 
-        StringBuilder builder = new StringBuilder();
-
-        for (User user : userList) {
-            builder.append("ID: ").append(user.getId());
-            builder.append("\nName: ").append(user.getName());
-            builder.append(", Age: ").append(user.getAge());
-
-            SocialAccount socialAccount = user.getSocialAccount();
-            builder.append("\nS'Account: ").append(socialAccount.getName());
-            builder.append(", Status: ").append(socialAccount.getStatus()).append(" .\n\n");
-        }
-
-        Log.d(TAG + " Lists", builder.toString());
 	}
 
     /**
@@ -180,4 +170,43 @@ public class MainActivity extends AppCompatActivity {
         myRealm.close(); // important to close else memory leaks
 
 	}
+
+    public void sampleQueryExample(View view) {
+
+        RealmQuery<User> realmQuery = myRealm.where(User.class);
+
+        //can filter results on realmQuery
+        realmQuery.greaterThan("age", 15); //Condition 1
+        realmQuery.contains("name", "John"); //Condition 2
+
+        RealmResults<User> userList = realmQuery.findAll();
+        displayQueriedUsers(userList);
+
+        //Alternatively, lets use Fluid Interface
+        RealmResults<User> userList2 = myRealm.where(User.class)
+                .greaterThan("age", 15)
+                .contains("name", "john", Case.INSENSITIVE)
+                .findAll();
+        displayQueriedUsers(userList2);
+
+    }
+
+
+    private void displayQueriedUsers(RealmResults<User> userList) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (User user : userList) {
+            builder.append("ID: ").append(user.getId());
+            builder.append("\nName: ").append(user.getName());
+            builder.append(", Age: ").append(user.getAge());
+
+            SocialAccount socialAccount = user.getSocialAccount();
+            builder.append("\nS'Account: ").append(socialAccount.getName());
+            builder.append(", Status: ").append(socialAccount.getStatus()).append(" .\n\n");
+        }
+
+        Log.d(TAG + " Lists", builder.toString());
+
+    }
 }

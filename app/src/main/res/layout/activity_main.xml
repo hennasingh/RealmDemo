@@ -46,6 +46,12 @@
 	<Button
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:onClick="sampleQueryExample"
+		android:text="Sample Query Example" />
+
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
 		android:onClick="displayAllUsers"
 		android:text="Display All" />
 
