@@ -18,6 +18,7 @@ import io.realm.Realm;
 import io.realm.RealmAsyncTask;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Example from Android Realm Fundamentals- Pluralsight
@@ -188,6 +189,33 @@ public class MainActivity extends AppCompatActivity {
                 .contains("name", "john", Case.INSENSITIVE)
                 .findAll();
         displayQueriedUsers(userList2);
+
+    }
+
+    public void sampleComplexQueries(View view) {
+
+        RealmResults<User> userList1 = myRealm.where(User.class)
+                .between("age", 20, 40)
+                .findAll();
+        displayQueriedUsers(userList1);
+
+        //Chaining Queries
+        RealmResults<User> userList2 = myRealm.where(User.class)
+                .between("age", 20, 40)
+                .beginGroup()
+                .endsWith("name", "n")
+                .or() //explicitly define OR
+                .contains("name", "Pe")
+                .endGroup()
+                .findAll();
+        displayQueriedUsers(userList2);
+
+        //accessing child fields
+        RealmResults<User> userList3 = myRealm.where(User.class)
+                .findAll()
+                .sort("socialAccount.name", Sort.DESCENDING); //ascending by default
+        displayQueriedUsers(userList3);
+
 
     }
 

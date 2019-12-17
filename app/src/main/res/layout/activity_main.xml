@@ -52,6 +52,12 @@
 	<Button
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:onClick="sampleComplexQueries"
+		android:text="Complex Query Example" />
+
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
 		android:onClick="displayAllUsers"
 		android:text="Display All" />
 
