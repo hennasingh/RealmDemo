@@ -58,6 +58,18 @@
 	<Button
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:onClick="updateFirstRecord"
+		android:text="Update First Record" />
+
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:onClick="deleteFromRealm"
+		android:text="Delete From Realm" />
+
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
 		android:onClick="displayAllUsers"
 		android:text="Display All" />
 

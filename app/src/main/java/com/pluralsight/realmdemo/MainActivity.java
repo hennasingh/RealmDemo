@@ -219,6 +219,43 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void updateFirstRecord(View view) {
+
+        myRealm.executeTransaction(new Realm.Transaction() {
+
+            @Override
+            public void execute(Realm realm) {
+                User user = realm.where(User.class).findFirst();
+                user.setName("New Name");
+                user.setAge(47);
+
+                SocialAccount socialAccount = user.getSocialAccount();
+                if (socialAccount != null) {
+                    socialAccount.setName("~snapchat");
+                    socialAccount.setStatus("Going for a Stroll");
+                }
+            }
+        });
+    }
+
+    public void deleteFromRealm(View view) {
+
+        myRealm.executeTransaction(new Realm.Transaction() {
+
+            @Override
+            public void execute(Realm realm) {
+                User user = realm.where(User.class).findFirst();
+                user.deleteFromRealm(); //Delete a specific Entry
+
+//                RealmResults<User> userList = realm.where(User.class).findAll();
+//                userList.deleteFirstFromRealm();
+//                userList.deleteLastFromRealm();
+//                userList.deleteFromRealm(3);
+//                userList.deleteAllFromRealm();
+            }
+        });
+    }
+
 
     private void displayQueriedUsers(RealmResults<User> userList) {
 
