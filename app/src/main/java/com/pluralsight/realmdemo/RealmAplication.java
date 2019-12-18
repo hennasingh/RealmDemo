@@ -7,6 +7,18 @@ import io.realm.RealmConfiguration;
 
 public class RealmAplication extends Application {
 
+    public static Realm getAnotherRealm() {
+        //configuration for different database
+
+        RealmConfiguration myOtherConfig = new RealmConfiguration.Builder()
+                .name("anotherRealm.realm")
+                .build();
+
+        Realm myAnotherRealm = Realm.getInstance(myOtherConfig);
+
+        return myAnotherRealm;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -15,6 +27,8 @@ public class RealmAplication extends Application {
 
         RealmConfiguration configuration = new RealmConfiguration.Builder()
                 .name("myFirstRealm.realm") // By default the name of db is"default.realm"
+                //.modules(Realm.getDefaultModule()) //all model classes extending RealmObject
+                .modules(new MyCustomModule())
                 .build();
 
         Realm.setDefaultConfiguration(configuration);

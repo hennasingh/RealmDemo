@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
 		myRealm = Realm.getDefaultInstance();
 
+        Realm myAnotherRealm = RealmAplication.getAnotherRealm();
+
 	}
 
 	// Add data to Realm using Main UI Thread. Be Careful: As it may BLOCK the UI.
