@@ -79,4 +79,10 @@
 		android:onClick="openDisplayActivity"
 		android:text="Recycler View Display" />
 
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:onClick="exploreMiscConcepts"
+		android:text="Async Display" />
+
 </LinearLayout>

@@ -17,6 +17,7 @@ import java.util.UUID;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
+import io.realm.RealmChangeListener;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -32,6 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
 	private Realm myRealm;
 	private RealmAsyncTask realmAsyncTask;
+    RealmChangeListener<RealmResults<User>> userListListener = new RealmChangeListener<RealmResults<User>>() {
+
+        @Override
+        public void onChange(RealmResults<User> users) {
+            displayQueriedUsers(users);
+        }
+    };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -147,24 +155,13 @@ public class MainActivity extends AppCompatActivity {
         });
 	}
 
+    private RealmResults<User> userList;
+
 	public void displayAllUsers(View view) {
-        RealmResults<User> userList = myRealm.where(User.class).findAll();
+        userList = myRealm.where(User.class).findAll();
         displayQueriedUsers(userList);
 
 	}
-
-    /**
-     * Realm transaction needs to be cancelled if a call comes or activity goes in the background
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (realmAsyncTask != null && !realmAsyncTask.isCancelled()) {
-            realmAsyncTask.cancel();
-        }
-
-    }
 
 	@Override
 	protected void onDestroy() {
@@ -257,6 +254,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Realm transaction needs to be cancelled if a call comes or activity goes in the background
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (userList != null)
+            userList.removeChangeListener(userListListener);
+        // Or userList.removeAllChangeListeners();
+
+        if (realmAsyncTask != null && !realmAsyncTask.isCancelled()) {
+            realmAsyncTask.cancel();
+        }
+
+    }
+
+    public void exploreMiscConcepts(View view) {
+
+        userList = myRealm.where(User.class).findAllAsync();
+
+        userList.addChangeListener(userListListener);
+
+    }
 
     private void displayQueriedUsers(RealmResults<User> userList) {
 
