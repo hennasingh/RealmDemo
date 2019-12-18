@@ -14,9 +14,7 @@ public class RealmAplication extends Application {
                 .name("anotherRealm.realm")
                 .build();
 
-        Realm myAnotherRealm = Realm.getInstance(myOtherConfig);
-
-        return myAnotherRealm;
+        return Realm.getInstance(myOtherConfig);
     }
 
     @Override
@@ -29,6 +27,8 @@ public class RealmAplication extends Application {
                 .name("myFirstRealm.realm") // By default the name of db is"default.realm"
                 //.modules(Realm.getDefaultModule()) //all model classes extending RealmObject
                 .modules(new MyCustomModule())
+                .schemaVersion(2)
+                .migration(new MyMigration())
                 .build();
 
         Realm.setDefaultConfiguration(configuration);

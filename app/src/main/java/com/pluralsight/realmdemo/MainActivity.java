@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
 		myRealm = Realm.getDefaultInstance();
 
-        Realm myAnotherRealm = RealmAplication.getAnotherRealm();
+        // Realm myAnotherRealm = RealmAplication.getAnotherRealm();
+        Log.d("MainActivity", "CurrentVersion " + myRealm.getVersion());
 
 	}
 

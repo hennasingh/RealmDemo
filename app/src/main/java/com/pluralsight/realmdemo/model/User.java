@@ -4,6 +4,7 @@ package com.pluralsight.realmdemo.model;
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class User extends RealmObject {
 
@@ -16,10 +17,31 @@ public class User extends RealmObject {
 
     private int age;
 
+    @Required
+    private String hobby;
+
+    private Company company;
+
     private SocialAccount socialAccount;
 
     @Ignore // not safed in database
     private String tempData;
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public String getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(String hobby) {
+        this.hobby = hobby;
+    }
 
     public String getId() {
         return id;
